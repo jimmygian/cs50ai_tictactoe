@@ -14,13 +14,17 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    return [[EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY]]
+    # return [[EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY]]
 
-    # return [[EMPTY, X, O],
-    #         [X, EMPTY, O],
-    #         [X, O, X]]
+    # return [[EMPTY,         EMPTY,      EMPTY],
+    #         [EMPTY,         EMPTY,      EMPTY],
+    #         [EMPTY,         EMPTY,      EMPTY]]
+
+    return [[X,             O,          X],
+            [X,             O,          O],
+            [O,             X,          X]]
 
 
 def player(board):
@@ -59,14 +63,54 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    raise NotImplementedError
+    
+    mark_board = player(board)
+
+    if action not in actions(board):
+        raise ValueError(f"Invalid move: {action} is not in available actions.")
+    
+    board_deep_copy = list(map(list, board))
+    # board_deep_copy = [row[:] for row in board]
+    # board_deep_copy = copy.deepcopy(board)
+
+    row, cell = action
+    board_deep_copy[row][cell] = mark_board
+
+    return board_deep_copy
 
 
 def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    raise NotImplementedError
+
+    # Initialize winner variable
+    winner = None
+
+    # Check rows for all X or O
+    for row in board:
+        if len(set(row)) == 1 and row[0] in [X, O]:
+            winner = row[0]
+            return winner
+        
+    # Check columns for all X or O
+    for col in range(len(board[0])):
+        column = [board[row][col] for row in range(len(board))]
+        if len(set(column)) == 1 and column[0] in [X, O]:
+            winner = column[0]
+            return winner
+
+    # Check main diagonal (0,0), (1,1), (2,2)
+    main_diagonal = [board[i][i] for i in range(len(board))]
+    if len(set(main_diagonal)) == 1 and main_diagonal[0] in [X, O]:
+        return main_diagonal[0]
+    
+    # Check anti diagonal (0,2), (1,1), (2,0)
+    anti_diagonal = [board[i][len(board)-1-i] for i in range(len(board))]
+    if len(set(anti_diagonal)) == 1 and anti_diagonal[0] in [X, O]:
+        return anti_diagonal[0]
+    
+    return None
 
 
 def terminal(board):
@@ -106,6 +150,18 @@ def minimax(board):
 if __name__ == "__main__":
     board = initial_state()
     current_player = player(board)
-    print("Current player is: ", current_player)
-    print("Game is terminal: ", terminal(board))
-    print("Available spots: ", actions(board))
+    # print("Game is terminal: ", terminal(board))
+    print()
+    # print("=======")
+    # print("Current player is: ", current_player)
+    # print("Current Board:")
+    # print(board)
+    # print()
+    # print("Available spots: ")
+    # for action in actions(board):
+    #     print(action)
+    # print()
+    # print("Result from action: ")
+    # print(result(board, (0,2)))
+    print(winner(board))
+    print("=======")
