@@ -25,36 +25,18 @@ def initial_state():
 
 def player(board):
     """
-    Returns player who has the next turn on a board.
+    Returns the player who has the next turn on a board.
     """
-    # If initial_state, return X:
-    is_empty = all(cell == None for row in board for cell in row)
-    if is_empty:
+    # If the board is empty, return X
+    if all(cell is None for row in board for cell in row):
         return X
 
-    # If not empty, count X, O and EMPTYs.
-    x_count = 0
-    o_count = 0
-    empty_count = 0
+    # Count occurrences of X and O
+    x_count = sum(row.count(X) for row in board)
+    o_count = sum(row.count(O) for row in board)
 
-    for row in board:
-        for cell in row:
-            if cell == X:
-                x_count += 1
-            elif cell == O:
-                o_count += 1
-            else:
-                empty_count += 1
-
-    if empty_count == 0:
-        return None 
-    elif x_count <= o_count:
-        return X
-    elif x_count > o_count:
-        return O
-            
-
-    # raise NotImplementedError
+    # The next player is X if X's count is not greater than O's
+    return X if x_count <= o_count else O
 
 
 def actions(board):
