@@ -14,13 +14,13 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    # return [[EMPTY, EMPTY, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY]]
+    return [[EMPTY, EMPTY, EMPTY],
+            [EMPTY, EMPTY, EMPTY],
+            [EMPTY, EMPTY, EMPTY]]
 
-    return [[O, X, O],
-            [X, X, O],
-            [X, O, X]]
+    # return [[EMPTY, X, O],
+    #         [X, EMPTY, O],
+    #         [X, O, X]]
 
 
 def player(board):
@@ -43,7 +43,16 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    raise NotImplementedError
+    if terminal(board):
+        return None
+    
+    actions = set()
+    for row_index, row in enumerate(board):
+        for cell_index, cell in enumerate(row):
+            if cell == EMPTY:
+                actions.add((row_index, cell_index))
+    
+    return sorted(actions)
 
 
 def result(board, action):
@@ -99,3 +108,4 @@ if __name__ == "__main__":
     current_player = player(board)
     print("Current player is: ", current_player)
     print("Game is terminal: ", terminal(board))
+    print("Available spots: ", actions(board))
