@@ -14,17 +14,17 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    # return [[EMPTY, EMPTY, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY]]
+    return [[EMPTY, EMPTY, EMPTY],
+            [EMPTY, EMPTY, EMPTY],
+            [EMPTY, EMPTY, EMPTY]]
 
     # return [[EMPTY,         EMPTY,      EMPTY],
     #         [EMPTY,         EMPTY,      EMPTY],
     #         [EMPTY,         EMPTY,      EMPTY]]
 
-    return [[X,             O,          X],
-            [X,             O,          O],
-            [O,             X,          X]]
+    # return [[O,             O,          X],
+    #         [X,             O,          EMPTY],
+    #         [O,             X,          X]]
 
 
 def player(board):
@@ -103,12 +103,14 @@ def winner(board):
     # Check main diagonal (0,0), (1,1), (2,2)
     main_diagonal = [board[i][i] for i in range(len(board))]
     if len(set(main_diagonal)) == 1 and main_diagonal[0] in [X, O]:
-        return main_diagonal[0]
+        winner = main_diagonal[0]
+        return winner
     
     # Check anti diagonal (0,2), (1,1), (2,0)
     anti_diagonal = [board[i][len(board)-1-i] for i in range(len(board))]
     if len(set(anti_diagonal)) == 1 and anti_diagonal[0] in [X, O]:
-        return anti_diagonal[0]
+        winner = anti_diagonal[0]
+        return winner
     
     return None
 
@@ -121,7 +123,7 @@ def terminal(board):
     terminal_state = False
 
     # If no moves left, return True
-    if board_full(board):
+    if board_full(board) or winner(board):
         terminal_state = True
 
     return terminal_state
@@ -152,16 +154,18 @@ if __name__ == "__main__":
     current_player = player(board)
     # print("Game is terminal: ", terminal(board))
     print()
-    # print("=======")
-    # print("Current player is: ", current_player)
-    # print("Current Board:")
-    # print(board)
-    # print()
-    # print("Available spots: ")
-    # for action in actions(board):
-    #     print(action)
-    # print()
-    # print("Result from action: ")
-    # print(result(board, (0,2)))
-    print(winner(board))
+    print("=======")
+    print("Current player is: ", current_player)
+    print("Current Board:")
+    print(board)
+    print()
+    print("Available spots: ")
+    for action in actions(board):
+        print(action)
+    print()
+    print("Result from action: ")
+    print(result(board, (1,2)))
+    new_board = result(board, (1,2))
+    print(winner(new_board))
+    print(terminal(new_board))
     print("=======")
