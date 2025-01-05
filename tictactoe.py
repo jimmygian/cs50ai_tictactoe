@@ -14,13 +14,13 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    # return [[EMPTY, EMPTY, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY]]
-
     return [[EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY]]
+
+    # return [[O, X, O],
+    #         [X, X, O],
+    #         [X, O, X]]
 
 
 def player(board):
@@ -64,7 +64,8 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
+    empty_count = sum(row.count(EMPTY) for row in board)
+    return not bool(empty_count)
 
 
 def utility(board):
@@ -85,3 +86,4 @@ if __name__ == "__main__":
     board = initial_state()
     current_player = player(board)
     print("Current player is: ", current_player)
+    print("Game is terminal: ", terminal(board))
