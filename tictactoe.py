@@ -14,13 +14,13 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    return [[EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY]]
+    # return [[EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY]]
 
-    # return [[O, X, O],
-    #         [X, X, O],
-    #         [X, O, X]]
+    return [[O, X, O],
+            [X, X, O],
+            [X, O, X]]
 
 
 def player(board):
@@ -68,12 +68,17 @@ def terminal(board):
     terminal_state = False
 
     # If no moves left, return True
-    empty_count = sum(row.count(EMPTY) for row in board)
-    if not empty_count:
+    if board_full(board):
         terminal_state = True
 
     return terminal_state
 
+def board_full(board):
+    """
+    Returns True if board does not have any "EMPTY" spots
+    """
+    empty_count = sum(row.count(EMPTY) for row in board)
+    return not bool(empty_count)
 
 def utility(board):
     """
