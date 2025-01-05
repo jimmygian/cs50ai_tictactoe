@@ -4,6 +4,7 @@ Tic Tac Toe Player
 
 import math
 
+# Posible moves
 X = "X"
 O = "O"
 EMPTY = None
@@ -13,6 +14,10 @@ def initial_state():
     """
     Returns starting state of the board.
     """
+    # return [[EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY]]
+
     return [[EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY]]
@@ -22,7 +27,34 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    raise NotImplementedError
+    # If initial_state, return X:
+    is_empty = all(cell == None for row in board for cell in row)
+    if is_empty:
+        return X
+
+    # If not empty, count X, O and EMPTYs.
+    x_count = 0
+    o_count = 0
+    empty_count = 0
+
+    for row in board:
+        for cell in row:
+            if cell == X:
+                x_count += 1
+            elif cell == O:
+                o_count += 1
+            else:
+                empty_count += 1
+
+    if empty_count == 0:
+        return None 
+    elif x_count <= o_count:
+        return X
+    elif x_count > o_count:
+        return O
+            
+
+    # raise NotImplementedError
 
 
 def actions(board):
@@ -65,3 +97,9 @@ def minimax(board):
     Returns the optimal action for the current player on the board.
     """
     raise NotImplementedError
+
+
+if __name__ == "__main__":
+    board = initial_state()
+    current_player = player(board)
+    print("Current player is: ", current_player)
