@@ -64,8 +64,15 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
+    # Initialise a terminal state
+    terminal_state = False
+
+    # If no moves left, return True
     empty_count = sum(row.count(EMPTY) for row in board)
-    return not bool(empty_count)
+    if not empty_count:
+        terminal_state = True
+
+    return terminal_state
 
 
 def utility(board):
