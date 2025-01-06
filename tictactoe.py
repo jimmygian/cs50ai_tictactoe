@@ -14,17 +14,17 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    return [[EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY]]
+    # return [[EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY]]
 
     # return [[EMPTY,         EMPTY,      EMPTY],
     #         [EMPTY,         EMPTY,      EMPTY],
     #         [EMPTY,         EMPTY,      EMPTY]]
 
-    # return [[O,             O,          X],
-    #         [X,             O,          EMPTY],
-    #         [O,             X,          X]]
+    return [[X,             O,          X],
+            [O,             O,          X],
+            [X,         EMPTY,          O]]
 
 
 def player(board):
@@ -58,7 +58,7 @@ def actions(board):
     
     return sorted(actions)
 
-
+# Transition model
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
@@ -128,12 +128,14 @@ def terminal(board):
 
     return terminal_state
 
+
 def board_full(board):
     """
     Returns True if board does not have any "EMPTY" spots
     """
     empty_count = sum(row.count(EMPTY) for row in board)
     return not bool(empty_count)
+
 
 def utility(board):
     """
@@ -152,27 +154,61 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    print()
+    print("===============")
+    print("===============")
+    print()
+    print("Current game board:")
+    for row in board:
+        print(row)
+    print()    
 
+    # Recursive algorithm - we need to repeat the exact same process, considering the opposite perspective
+
+    X_WINS = 1
+    O_WINS = -1
+
+    # # Who's turn is it?
+    current_player = player(board)
+    print("Current player is: ", current_player)
+
+    # What are the possible actions player can take?
+    current_player_actions = actions(board)
+    print("Player's available actions:", current_player_actions)
+
+    # Loop through all possible actions and check if player wins
+    for action in current_player_actions:
+        new_board = result(board, action)
+
+        print()
+        print("If action: ", action)
+        print("Resulting game board:")
+        for row in new_board:
+            print(row)
+        print()  
+
+        if terminal(new_board) or winner(new_board):
+            score = utility(new_board)
+            if score == X_WINS:
+                print("X Wins!")
+            elif score == O_WINS:
+                print("O Wins!")
+            elif terminal(new_board):
+                print("Game is over - No one wins :(")
+        else:
+            print("Game continues..")
+
+        print()  
+    print("===============")
+    print("===============")
 
 if __name__ == "__main__":
     board = initial_state()
     current_player = player(board)
     # print("Game is terminal: ", terminal(board))
     print()
-    print("=======")
-    print("Current player is: ", current_player)
-    print("Current Board:")
-    print(board)
-    print()
-    print("Available spots: ")
-    for action in actions(board):
-        print(action)
-    print()
-    print("Result from action: ")
-    print(result(board, (1,2)))
-    new_board = result(board, (1,2))
-    print(winner(new_board))
-    print(terminal(new_board))
-    print(utility(new_board))
-    print("=======")
+    print("GAME BEGINS")
+    print("-------------")
+    minimax(board)
+    print("-------------")
+
