@@ -18,13 +18,9 @@ def initial_state():
     #         [EMPTY, EMPTY, EMPTY],
     #         [EMPTY, EMPTY, EMPTY]]
 
-    # return [[EMPTY,         EMPTY,      EMPTY],
-    #         [EMPTY,         EMPTY,      EMPTY],
-    #         [EMPTY,         EMPTY,      EMPTY]]
-
-    return [[X,             O,          X],
-            [O,             O,          X],
-            [X,         EMPTY,          O]]
+    return [[X, O, X],
+            [X, X, EMPTY],
+            [O, EMPTY, O]]
 
 
 def player(board):
@@ -163,44 +159,70 @@ def minimax(board):
         print(row)
     print()    
 
+
+    """ What's happening in MINIMAX algorithm?
+    Given a state s, depending on whose turn is:
+    - MAX picks action a in ACTIONS(s) that produces highest value of MIN-VALUE(RESULT(s, a))
+    - MIN picks action a in ACTIONS(s) that produces smallest value of MAX-VALUE(RESULT(s, a))
+
+    Explanation of MIN-VALUE(RESULT(s, a))
+    - RESULT(s, a): What state results after I take this action?
+    - MIN-VALUE(result): What happens when that MIN player tres to minimise the value of that state
+
+    I need to consider that for ALL of possible actions, and after that, I need to pick the option that
+    has the highest value.
+
+    Explanation of MAX-VALUE(RESULT(s, a))
+
+    """
     # Recursive algorithm - we need to repeat the exact same process, considering the opposite perspective
+    BEST_ACTION = set()
 
-    X_WINS = 1
-    O_WINS = -1
+    def max_value_fn(board):      
+        if terminal(board):
+            return utility(board)
+        
+        # Init value to minus infinity (so that first check ensure recursive process is happening)
+        v = -math.inf
 
-    # # Who's turn is it?
+        for action in actions(board):
+            v = max(v, min_value_fn(result(board, action)))
+        return v
+
+    def min_value_fn(board):
+        if terminal(board):
+            return utility(board)
+        
+        # Init value to infinity
+        v = math.inf
+
+        for action in actions(board):
+            v = min(v, max_value_fn(result(board, action)))
+        return v
+
+
+    # If Game is finished, return
+    if terminal(board):
+        return utility(board)        
+
+    # Who's turn is it?
     current_player = player(board)
     print("Current player is: ", current_player)
 
-    # What are the possible actions player can take?
-    current_player_actions = actions(board)
-    print("Player's available actions:", current_player_actions)
+    
+    if current_player == X:
+        # Return the max you can
+        v = max_value_fn(board)
+    else:
+        # Return min you can 
+        v = min_value_fn(board)
+    
+    print("Player Winning: ", v)
+    return BEST_ACTION
 
-    # Loop through all possible actions and check if player wins
-    for action in current_player_actions:
-        new_board = result(board, action)
+    
 
-        print()
-        print("If action: ", action)
-        print("Resulting game board:")
-        for row in new_board:
-            print(row)
-        print()  
-
-        if terminal(new_board) or winner(new_board):
-            score = utility(new_board)
-            if score == X_WINS:
-                print("X Wins!")
-            elif score == O_WINS:
-                print("O Wins!")
-            elif terminal(new_board):
-                print("Game is over - No one wins :(")
-        else:
-            print("Game continues..")
-
-        print()  
-    print("===============")
-    print("===============")
+  
 
 if __name__ == "__main__":
     board = initial_state()
@@ -209,6 +231,8 @@ if __name__ == "__main__":
     print()
     print("GAME BEGINS")
     print("-------------")
-    minimax(board)
+    minimaxgame = minimax(board)
+    print()
+    print("NEXT ACTION: ", minimaxgame)
     print("-------------")
 
