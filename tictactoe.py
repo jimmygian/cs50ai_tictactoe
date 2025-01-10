@@ -14,13 +14,13 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    # return [[EMPTY, EMPTY, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY]]
+    return [[EMPTY, EMPTY, EMPTY],
+            [EMPTY, EMPTY, EMPTY],
+            [EMPTY, EMPTY, EMPTY]]
 
-    return [[X, O, X],
-            [X, X, EMPTY],
-            [O, EMPTY, O]]
+    # return [[X, X, O],
+    #         [EMPTY, O, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY]]
 
 
 def player(board):
@@ -176,7 +176,6 @@ def minimax(board):
 
     """
     # Recursive algorithm - we need to repeat the exact same process, considering the opposite perspective
-    BEST_ACTION = set()
 
     def max_value_fn(board):      
         if terminal(board):
@@ -198,35 +197,58 @@ def minimax(board):
 
         for action in actions(board):
             v = min(v, max_value_fn(result(board, action)))
-        return v
-
-
-    # If Game is finished, return
-    if terminal(board):
-        return utility(board)        
+        return v       
 
     # Who's turn is it?
-    current_player = player(board)
-    print("Current player is: ", current_player)
+    computer_player = player(board)
+    print("Computer player is: ", computer_player)
 
     
-    if current_player == X:
-        # Return the max you can
-        v = max_value_fn(board)
+    if computer_player == X:
+        # Check results of all possible scores and return action with max score
+        store_scores = []
+
+        for action in actions(board):
+            score = min_value_fn(result(board, action))
+            store_scores.append((action, score))
+
+        print(store_scores)
+       
+        # Find the action with score -1, if it exists
+        for act, score in store_scores:
+            if score == 1:
+                print("Best computer move: ", act)
+                return act
+        for act, score in store_scores:
+            if score == 0:
+                print("Best computer move: ", act)
+                return act
     else:
-        # Return min you can 
-        v = min_value_fn(board)
-    
-    print("Player Winning: ", v)
-    return BEST_ACTION
+        # Check results of all possible scores and return action with min score
+        store_scores = []
 
-    
+        for action in actions(board):
+            score = max_value_fn(result(board, action))
+            store_scores.append((action, score))
+
+        print(store_scores)
+
+        # Find the action with score -1, if it exists
+        for act, score in store_scores:
+            if score == -1:
+                print("Best computer move: ", act)
+                return act
+        for act, score in store_scores:
+            if score == 0:
+                print("Best computer move: ", act)
+                return act
+
 
   
 
 if __name__ == "__main__":
     board = initial_state()
-    current_player = player(board)
+    computer_player = player(board)
     # print("Game is terminal: ", terminal(board))
     print()
     print("GAME BEGINS")
