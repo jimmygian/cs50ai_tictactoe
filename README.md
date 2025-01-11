@@ -17,11 +17,16 @@ To run the project locally, follow these steps:
 3. Install the libraries from the requirements.txt file
 
 4. **Run the script in the terminal**
-   TBC
+   Run `python runner.py` and enjoy.
 
 <br>
 
+
+
 ## `tictactoe.py`
+
+`runner.py` was already written. My assignment was to implement all the functions in `tictactoe.py`.
+
 
 ### `player(board)` Implementation
 
@@ -195,3 +200,25 @@ import copy
 original_dict = {"key1": {"nested_key": 1}, "key2": 2}
 copied_dict = copy.deepcopy(original_dict)
 ```
+
+
+### `minimax(board)` Implementation
+
+The minimax function calculates the best possible move for the player (`player(board)`) that plays next on the board and returns that move. 
+
+The function is based on the MiniMax algorithm, which is a type of algorithm in adversarial search. Minimax represents winning conditions as (-1) for one side (the "MIN" side) and (+1) for the other side (the "MAX side). If we imagine that 0 is the middle where it's a tie, the minimizing side is trying to get the lowest score to win, while the maximizer is trying to get the highest score by the time the game ends.
+
+For tic-tac-toe, we can imagine a terminal state where no one wins (0), a terminal state in which X wins (+1) and a terminal state in which O wins (-1). This means that X will be our MAX player that is trying to Maximize the score, and O will be our MIN player.
+
+To better understand what we need to achive, let's think what we would do if we were playing the game and it was out turn. We would ask ourselves "If I take this action (e.g. put X in this position), what would my opponent do next?".  We could even try to visualize what we would do after our opponent's move, and what they would do after it, and so on, until the game reach the end and someone wins. Based on this train of thought, we would then choose the option that is the least favourable for our opponent. Of course, it's impossible for the human mind to do that so quickly, we can only think of few possible steps ahead.
+
+For the computer on the other hand it's really easy - at least for tic-tac-toe that only has a few thousand moves in total. It can do this process and find each terminating state (if each player played optimally) for each available move. And that's what the minimax does, it checks for each move what would the terminating state and based on the result, it then returns the best choice.
+
+
+To put it in pseudocode, the Minimax algorithm in this project works the following way:
+* It first identifies which player is using the minimax algorithm (a.k.a is the computer). Since we have the option to choose which player we (the human) want to be, computer could be wither O or X.
+
+* For each action of ACTIONS(_s_):
+    - If computer player is X - a.k.a the MAX player, it picks the action _a_ in available ACTIONS(_s_) that produces the **HIGHEST value of MIN-VALUE(Result(_s, a_))**.
+    - If computer player is O - a.k.a the MIN player, it picks the action _a_ in Actions(_s_) that produces **the LOWEST value of MAX-VALUE(Result(_s, a_))**.
+

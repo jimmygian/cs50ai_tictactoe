@@ -160,30 +160,19 @@ def minimax(board):
     print()    
 
 
-    """ What's happening in MINIMAX algorithm?
-    Given a state s, depending on whose turn is:
-    - MAX picks action a in ACTIONS(s) that produces highest value of MIN-VALUE(RESULT(s, a))
-    - MIN picks action a in ACTIONS(s) that produces smallest value of MAX-VALUE(RESULT(s, a))
 
-    Explanation of MIN-VALUE(RESULT(s, a))
-    - RESULT(s, a): What state results after I take this action?
-    - MIN-VALUE(result): What happens when that MIN player tres to minimise the value of that state
 
-    I need to consider that for ALL of possible actions, and after that, I need to pick the option that
-    has the highest value.
-
-    Explanation of MAX-VALUE(RESULT(s, a))
-
-    """
-    # Recursive algorithm - we need to repeat the exact same process, considering the opposite perspective
-
-    def max_value_fn(board):      
+    # ==== RECURSIVE Functions ====
+    
+    def max_value_fn(board):
+        # Base case
         if terminal(board):
             return utility(board)
         
         # Init value to minus infinity (so that first check ensure recursive process is happening)
         v = -math.inf
 
+        # Recursive process
         for action in actions(board):
             v = max(v, min_value_fn(result(board, action)))
         return v
@@ -198,16 +187,20 @@ def minimax(board):
         for action in actions(board):
             v = min(v, max_value_fn(result(board, action)))
         return v       
+    
+    # ====================================
 
-    # Who's turn is it?
+    
+    # Get computer player
     computer_player = player(board)
     print("Computer player is: ", computer_player)
 
-    
+
+    # If computer is "X", it's the MAX player (who wants to MAXIMISE score)
     if computer_player == X:
-        # Check results of all possible scores and return action with max score
         store_scores = []
 
+        # Loop through all possible actions
         for action in actions(board):
             score = min_value_fn(result(board, action))
             store_scores.append((action, score))
@@ -223,10 +216,12 @@ def minimax(board):
             if score == 0:
                 print("Best computer move: ", act)
                 return act
+    
+    # If computer is "O", it's the MIN player (who wants to MINIMISE score)
     else:
-        # Check results of all possible scores and return action with min score
         store_scores = []
 
+        # Loop through all possible actions
         for action in actions(board):
             score = max_value_fn(result(board, action))
             store_scores.append((action, score))
