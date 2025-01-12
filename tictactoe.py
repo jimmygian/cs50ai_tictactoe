@@ -15,13 +15,12 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    return [[EMPTY, EMPTY, EMPTY],
+    # return [[EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY]]
+    return [[X, EMPTY, O],
             [EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY]]
-
-    # return [[X, X, O],
-    #         [EMPTY, O, EMPTY],
-    #         [EMPTY, EMPTY, EMPTY]]
 
 
 def player(board):
@@ -150,15 +149,7 @@ def utility(board):
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
-    """
-    print()
-    print("===============")
-    print("===============")
-    print()
-    print("Current game board:")
-    for row in board:
-        print(row)
-    print()    
+    """   
 
     # ==== RECURSIVE Functions ====
     
@@ -172,10 +163,12 @@ def minimax(board):
 
         # Recursive process
         for action in actions(board):
-            v = max(v, min_value_fn(result(board, action)))
+            resulting_board = result(board, action)
+            v = max(v, min_value_fn(resulting_board))
         return v
 
     def min_value_fn(board):
+        # Base case
         if terminal(board):
             return utility(board)
         
@@ -183,7 +176,8 @@ def minimax(board):
         v = math.inf
 
         for action in actions(board):
-            v = min(v, max_value_fn(result(board, action)))
+            resulting_board = result(board, action)
+            v = min(v, max_value_fn(resulting_board))
         return v       
     
     # ====================================
@@ -209,20 +203,17 @@ def minimax(board):
         for action in all_possible_actions:
             # Get score using either min_value_fn() if player is MAX
             # OR max_value_fn() if player is MIN
-            score = minimax(result(board, action))
+            resulting_state = result(board, action)
+            score = minimax(resulting_state)
             # Target is 1 for MAX and -1 for min player
             if score == target:
-                print("Best computer move: ", action)
                 return action
             else:
                 store_scores.append((action, score))
-
-        print(store_scores)
         
         # Return the first action whose score is 0.
         for action, score in store_scores:
             if score == 0:
-                print("Best computer move: ", action)
                 return action
             
     # ====================================
@@ -230,7 +221,6 @@ def minimax(board):
                 
     # Get computer player
     computer_player = player(board)
-    print("Computer player is: ", computer_player)
 
     # If computer is "X", it's the MAX player (who wants to MAXIMISE score)
     if computer_player == X:
@@ -245,12 +235,12 @@ def minimax(board):
 if __name__ == "__main__":
     board = initial_state()
     computer_player = player(board)
-    # print("Game is terminal: ", terminal(board))
-    print()
-    print("GAME BEGINS")
-    print("-------------")
+    # print()
+    # print("GAME BEGINS")
+    # print("-------------")
+    # print()
+    # print("BOARD")
+    # for row in board:
+    #     print(row)
+    # print()
     minimaxgame = minimax(board)
-    print()
-    print("NEXT ACTION: ", minimaxgame)
-    print("-------------")
-
