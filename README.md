@@ -25,7 +25,7 @@ To run the project locally, follow these steps:
 
 ## `tictactoe.py`
 
-`runner.py` was already written. My assignment was to implement all the functions in `tictactoe.py`, including the Minimax algorithm with A/B Pruning.
+`runner.py` has already been written, and my task was to implement all the functions in `tictactoe.py`. While Alpha/Beta Pruning could be added at a later stage, it is not implemented at this time.
 
 
 ### `player(board)` Implementation
