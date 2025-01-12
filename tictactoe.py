@@ -52,13 +52,14 @@ def actions(board):
             if cell == EMPTY:
                 actions.add((row_index, cell_index))
     
-    return sorted(actions)
+    return actions
 
-# Transition model
+
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    # Transition model
     
     mark_board = player(board)
 
@@ -182,13 +183,15 @@ def minimax(board):
     
     # ====================================
 
-
     # HELPER Function ======
     
     def best_action(board, minimax, target):
 
         # Get list of all possible actions
         all_possible_actions = actions(board)
+
+        if all_possible_actions == None:
+            return None
 
         # If game just started, return any action
         if len(all_possible_actions) == 9:
@@ -217,7 +220,6 @@ def minimax(board):
                 return action
             
     # ====================================
-
                 
     # Get computer player
     computer_player = player(board)
@@ -229,18 +231,17 @@ def minimax(board):
     # If computer is "O", it's the MIN player (who wants to MINIMISE score)
     else:
         return best_action(board, max_value_fn, -1)
-
   
 
-if __name__ == "__main__":
-    board = initial_state()
-    computer_player = player(board)
-    # print()
-    # print("GAME BEGINS")
-    # print("-------------")
-    # print()
-    # print("BOARD")
-    # for row in board:
-    #     print(row)
-    # print()
-    minimaxgame = minimax(board)
+# if __name__ == "__main__":
+#     board = initial_state()
+#     computer_player = player(board)
+#     # print()
+#     # print("GAME BEGINS")
+#     # print("-------------")
+#     # print()
+#     # print("BOARD")
+#     # for row in board:
+#     #     print(row)
+#     # print()
+#     minimaxgame = minimax(board)
