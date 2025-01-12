@@ -25,7 +25,7 @@ To run the project locally, follow these steps:
 
 ## `tictactoe.py`
 
-`runner.py` was already written. My assignment was to implement all the functions in `tictactoe.py`.
+`runner.py` was already written. My assignment was to implement all the functions in `tictactoe.py`, including the Minimax algorithm with A/B Pruning.
 
 
 ### `player(board)` Implementation
@@ -204,21 +204,106 @@ copied_dict = copy.deepcopy(original_dict)
 
 ### `minimax(board)` Implementation
 
-The minimax function calculates the best possible move for the player (`player(board)`) that plays next on the board and returns that move. 
+The `minimax` function calculates the **optimal move** for the next player in a tic-tac-toe game by simulating all possible moves and outcomes. It uses the **Minimax algorithm**, a recursive decision-making technique often used in two-player games like tic-tac-toe, chess, and checkers. Here's how the function works step by step:
 
-The function is based on the MiniMax algorithm, which is a type of algorithm in adversarial search. Minimax represents winning conditions as (-1) for one side (the "MIN" side) and (+1) for the other side (the "MAX side). If we imagine that 0 is the middle where it's a tie, the minimizing side is trying to get the lowest score to win, while the maximizer is trying to get the highest score by the time the game ends.
+---
 
-For tic-tac-toe, we can imagine a terminal state where no one wins (0), a terminal state in which X wins (+1) and a terminal state in which O wins (-1). This means that X will be our MAX player that is trying to Maximize the score, and O will be our MIN player.
+#### **Core Idea of Minimax**
+The algorithm assumes:
+- **X (the MAX player)** tries to maximize the score (+1) by making the best possible move.
+- **O (the MIN player)** tries to minimize the score (-1) by making the best possible move.
+- A tie is neutral (score = 0).
 
-To better understand what we need to achive, let's think what we would do if we were playing the game and it was out turn. We would ask ourselves "If I take this action (e.g. put X in this position), what would my opponent do next?".  We could even try to visualize what we would do after our opponent's move, and what they would do after it, and so on, until the game reach the end and someone wins. Based on this train of thought, we would then choose the option that is the least favourable for our opponent. Of course, it's impossible for the human mind to do that so quickly, we can only think of few possible steps ahead.
+The function explores all possible game states and selects the move that leads to the **best guaranteed outcome** for the current player, assuming both players play optimally.
 
-For the computer on the other hand it's really easy - at least for tic-tac-toe that only has a few thousand moves in total. It can do this process and find each terminating state (if each player played optimally) for each available move. And that's what the minimax does, it checks for each move what would the terminating state and based on the result, it then returns the best choice.
+---
+
+#### **Key Components of the Function**
+
+##### 1. **Recursive Helper Functions**
+The function uses two recursive helpers: `max_value_fn` and `min_value_fn`.
+
+- **`max_value_fn(board)`**:  
+  Represents the MAX player's turn (player X).  
+  - If the game is over (`terminal(board)`), it returns the game's score using `utility(board)`.
+  - Otherwise, it recursively computes the maximum value of the possible moves by:
+    1. Generating all available moves (`actions(board)`).
+    2. Applying each move to the board (`result(board, action)`).
+    3. Recursively calling `min_value_fn` to evaluate the resulting state.
+
+- **`min_value_fn(board)`**:  
+  Represents the MIN player's turn (player O).  
+  - Similarly, if the game is over, it returns the score.
+  - Otherwise, it computes the minimum value of the possible moves by:
+    1. Generating all available moves.
+    2. Applying each move to the board.
+    3. Recursively calling `max_value_fn` to evaluate the resulting state.
+
+These functions evaluate the entire game tree, ensuring the best decision is made for both players at every step.
+
+---
+
+##### 2. **Best Action Finder**
+The `best_action` function selects the optimal move for the current player. Here's how it works:
+- **For a starting board** (with no moves yet), it selects a random action since all moves are equally valid.
+- For other cases:
+  - It evaluates all possible actions.
+  - If a move leads directly to a winning state (`score == target`, where `target` is +1 for MAX and -1 for MIN), it selects that move immediately.
+  - Otherwise, it stores potential moves and selects the first neutral move (score = 0) if no winning move exists.
+
+---
+
+##### 3. **Player Identification**
+The `player(board)` function determines the next player:
+- If it's X's turn, `min_value_fn` is used to evaluate moves (because O will respond).
+- If it's O's turn, `max_value_fn` is used to evaluate moves.
 
 
-To put it in pseudocode, the Minimax algorithm in this project works the following way:
-* It first identifies which player is using the minimax algorithm (a.k.a is the computer). Since we have the option to choose which player we (the human) want to be, computer could be wither O or X.
+**Why This Works**
 
-* For each action of ACTIONS(_s_):
-    - If computer player is X - a.k.a the MAX player, it picks the action _a_ in available ACTIONS(_s_) that produces the **HIGHEST value of MIN-VALUE(Result(_s, a_))**.
-    - If computer player is O - a.k.a the MIN player, it picks the action _a_ in Actions(_s_) that produces **the LOWEST value of MAX-VALUE(Result(_s, a_))**.
+The idea here is to simulate the behavior of the opponent. If it's X's turn (the MAX player), it is crucial to evaluate the worst-case response from O, which is why min_value_fn is called. This ensures that X chooses the move that maximizes its score, even when O plays optimally to minimize X's score. Similarly, when it's O's turn (the MIN player), max_value_fn is used to evaluate the worst-case response from X. This guarantees that O chooses the move that minimizes its score, even when X plays optimally to maximize its score.
 
+This alternating evaluation ensures that both players account for their opponent's best possible counter-moves, resulting in an optimal decision-making process.
+
+
+---
+
+#### **Flow of the Algorithm**
+1. **Check if the game is over**:  
+   If the game is already in a terminal state (win, loss, or draw), return the result directly.
+
+2. **Simulate all possible moves**:  
+   For each available action, simulate the resulting board state.
+
+3. **Evaluate game outcomes**:  
+   Use `max_value_fn` and `min_value_fn` to evaluate the best and worst outcomes for the current player.
+
+4. **Select the best move**:  
+   Return the move that maximizes or minimizes the player's score, depending on whether they're MAX or MIN.
+
+---
+
+#### **Why This Works**
+- The algorithm guarantees an optimal move by exploring all possible game states.
+- Even if the opponent plays optimally, the chosen move will lead to the best possible outcome (win or draw).
+
+---
+
+#### **Alpha-Beta Pruning**
+Alpha-beta pruning is not fully implemented here but could be added to improve efficiency by skipping unnecessary branches in the game tree. This is especially useful in games with a larger search space, like chess.
+
+---
+
+#### **Example**
+If the board state is:
+```
+X | O |  
+---------
+X |   | O
+---------
+  |   |  
+```
+
+- The function evaluates all possible moves for both X and O.
+- It recursively simulates the game until the end state and calculates the scores for each move.
+- Based on the scores, it selects the best move for the current player.

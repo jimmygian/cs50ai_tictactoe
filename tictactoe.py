@@ -18,6 +18,9 @@ def initial_state():
     return [[EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY]]
+    # return [[X, EMPTY, O],
+    #         [EMPTY, EMPTY, EMPTY],
+    #         [EMPTY, EMPTY, EMPTY]]
 
 
 def player(board):
@@ -180,7 +183,7 @@ def minimax(board):
     # ====================================
 
 
-    # HELPER + A/B PRUNING Function ======
+    # HELPER Function ======
     
     def best_action(board, minimax, target):
 
