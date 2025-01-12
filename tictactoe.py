@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+import random
 
 # Posible moves
 X = "X"
@@ -159,9 +160,6 @@ def minimax(board):
         print(row)
     print()    
 
-
-
-
     # ==== RECURSIVE Functions ====
     
     def max_value_fn(board):
@@ -190,54 +188,57 @@ def minimax(board):
     
     # ====================================
 
+
+    # HELPER + A/B PRUNING Function ======
     
+    def best_action(board, minimax, target):
+
+        # Get list of all possible actions
+        all_possible_actions = actions(board)
+
+        # If game just started, return any action
+        if len(all_possible_actions) == 9:
+            random_number = random.randint(0, 8)
+            random_action = all_possible_actions[random_number]
+            return random_action
+
+        # Create var for storing list of [(action, score)]
+        store_scores = []
+
+        # Loop through actions
+        for action in all_possible_actions:
+            # Get score using either min_value_fn() if player is MAX
+            # OR max_value_fn() if player is MIN
+            score = minimax(result(board, action))
+            # Target is 1 for MAX and -1 for min player
+            if score == target:
+                print("Best computer move: ", action)
+                return action
+            else:
+                store_scores.append((action, score))
+
+        print(store_scores)
+        
+        # Return the first action whose score is 0.
+        for action, score in store_scores:
+            if score == 0:
+                print("Best computer move: ", action)
+                return action
+            
+    # ====================================
+
+                
     # Get computer player
     computer_player = player(board)
     print("Computer player is: ", computer_player)
 
-
     # If computer is "X", it's the MAX player (who wants to MAXIMISE score)
     if computer_player == X:
-        store_scores = []
-
-        # Loop through all possible actions
-        for action in actions(board):
-            score = min_value_fn(result(board, action))
-            store_scores.append((action, score))
-
-        print(store_scores)
-       
-        # Find the action with score -1, if it exists
-        for act, score in store_scores:
-            if score == 1:
-                print("Best computer move: ", act)
-                return act
-        for act, score in store_scores:
-            if score == 0:
-                print("Best computer move: ", act)
-                return act
+        return best_action(board, min_value_fn, 1)
     
     # If computer is "O", it's the MIN player (who wants to MINIMISE score)
     else:
-        store_scores = []
-
-        # Loop through all possible actions
-        for action in actions(board):
-            score = max_value_fn(result(board, action))
-            store_scores.append((action, score))
-
-        print(store_scores)
-
-        # Find the action with score -1, if it exists
-        for act, score in store_scores:
-            if score == -1:
-                print("Best computer move: ", act)
-                return act
-        for act, score in store_scores:
-            if score == 0:
-                print("Best computer move: ", act)
-                return act
-
+        return best_action(board, max_value_fn, -1)
 
   
 
